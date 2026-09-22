@@ -10,12 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deployment started
-        run: echo "Starting CD deployment..."
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Show deployment information
         run: |
-          echo "Continuous Deployment"
-          echo "Branch: ci-cd-testing"
-          echo "Target: EC2 Server"
-          echo "Deployment ready"
+          mkdir -p ~/.ssh
+          echo "$EC2_SSH_KEY" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/ec2_key "$EC2_USER@$EC2_HOST" << 'EOF'
+            cd ~/Devops-projects-compose
+
+            git fetch origin
+            git checkout ci-cd-testing
+            git pull origin ci-cd-testing
+
+            docker compose down
+            docker compose up -d --build
+
+            docker compose ps
+          EOF
