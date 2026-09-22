@@ -5,22 +5,36 @@ const app = express();
 
 const PORT = 5000;
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
+app.use(express.json());
 
-    app.get("/", (req, res) => {
-      res.send("Backend is running!");
-    });
+// Home route
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
 
-    app.get("/api", (req, res) => {
-      res.send("Hello from Backend! 🚀");
-    });
+// API route
+app.get("/api", (req, res) => {
+  res.send("Hello from Backend! 🚀");
+});
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+// MongoDB connection
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected");
+    })
+    .catch((err) => {
+      console.error("MongoDB connection failed:", err);
     });
-  })
-  .catch((err) => {
-    console.error("MongoDB connection failed:", err);
+}
+
+// Export app for testing
+module.exports = app;
+
+// Start server only when this file is run directly
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Backend running on port ${PORT}`);
   });
+}
