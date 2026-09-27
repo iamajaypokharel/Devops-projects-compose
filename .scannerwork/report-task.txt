@@ -1,6 +1,0 @@
-projectKey=Devops1
-serverUrl=https://sonar.ajaypokharel.com.np
-serverVersion=9.9.8.100196
-dashboardUrl=https://sonar.ajaypokharel.com.np/dashboard?id=Devops1
-ceTaskId=AaDiaHAt44DAdSsHN_yy
-ceTaskUrl=https://sonar.ajaypokharel.com.np/api/ce/task?id=AaDiaHAt44DAdSsHN_yy
